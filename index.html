@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Little Corner</title>
+<meta name="description" content="A little digital home for us.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script>
+function handleImageError(img) {
+  if (!img) return;
+  const currentSrc = img.getAttribute("src") || "";
+  const tried = img.dataset.triedExts ? img.dataset.triedExts.split(",") : [];
+  const extensions = [".jpeg", ".jpg", ".png", ".webp"];
+  const currentExtMatch = currentSrc.match(/\.(jpeg|jpg|png|webp)$/i);
+
+  if (currentExtMatch) {
+    const currentExt = currentExtMatch[0].toLowerCase();
+    if (!tried.includes(currentExt)) {
+      tried.push(currentExt);
+    }
+    const nextExt = extensions.find(ext => !tried.includes(ext));
+    if (nextExt) {
+      tried.push(nextExt);
+      img.dataset.triedExts = tried.join(",");
+      const basePath = currentSrc.substring(0, currentSrc.lastIndexOf("."));
+      img.src = basePath + nextExt;
+      return;
+    }
+  }
+
+  const frame = img.closest('.birthday-photo-frame, .hero-photo-frame, .final-photo-frame, .timeline-photo, .memory-item, .envelope-photo');
+  if (frame) {
+    frame.classList.add('img-missing');
+  }
+}
+window.handleImageError = handleImageError;
+</script>
+</head>
+<body>
+
+<!-- ======================================================= -->
+<!-- GATE: NAME ENTRY -->
+<!-- ======================================================= -->
+<section id="gate-name" class="gate-screen active-screen">
+  <div class="gate-inner">
+    <p class="gate-eyebrow">psst...</p>
+    <h1 class="gate-question">Before you enter&hellip; tell me your name <span class="heart">❤️</span></h1>
+    <form id="name-form" class="gate-form" autocomplete="off">
+      <input type="text" id="name-input" name="name" placeholder="Type your name..." aria-label="Your name" required>
+      <button type="submit" class="btn btn-primary">Enter</button>
+    </form>
+    <p id="name-error" class="gate-error" aria-live="polite"></p>
+  </div>
+  <div class="floating-hearts" aria-hidden="true"></div>
+</section>
+
+<!-- ======================================================= -->
+<!-- GATE: DO YOU LOVE ME -->
+<!-- ======================================================= -->
+<section id="gate-love" class="gate-screen">
+  <div class="gate-inner">
+    <p class="gate-eyebrow" id="love-greeting">Okay Yashika&hellip; one important question.</p>
+    <h1 class="gate-question">Do you love me? <span class="heart">❤️</span></h1>
+    <div class="gate-buttons">
+      <button class="btn btn-primary" id="love-yes">YES</button>
+      <button class="btn btn-ghost" id="love-no">NO</button>
+    </div>
+    <p id="love-nudge" class="gate-nudge" aria-live="polite"></p>
+  </div>
+  <div class="floating-hearts" aria-hidden="true"></div>
+</section>
+
+<!-- ======================================================= -->
+<!-- GATE: CAN I BE YOUR BOYFRIEND -->
+<!-- ======================================================= -->
+<section id="gate-boyfriend" class="gate-screen">
+  <div class="gate-inner">
+    <p class="gate-eyebrow">Okay&hellip; then I have one more question.</p>
+    <h1 class="gate-question">Can I be your boyfriend? <span class="heart">❤️</span></h1>
+    <div class="gate-buttons">
+      <button class="btn btn-primary" id="bf-yes">YES</button>
+      <button class="btn btn-ghost" id="bf-no">NO</button>
+    </div>
+    <p id="bf-nudge" class="gate-nudge" aria-live="polite"></p>
+  </div>
+  <div class="floating-hearts" aria-hidden="true"></div>
+</section>
+
+<!-- ======================================================= -->
+<!-- COUNTDOWN -->
+<!-- ======================================================= -->
+<section id="gate-countdown" class="gate-screen countdown-screen">
+  <div class="countdown-number" id="countdown-number">5</div>
+</section>
+
+<!-- ======================================================= -->
+<!-- BIRTHDAY REVEAL -->
+<!-- ======================================================= -->
+<section id="gate-birthday" class="gate-screen birthday-screen">
+  <div class="birthday-inner">
+    <h1 class="birthday-title">Happy Birthday,<br><span class="script-name">Yashika</span> <span class="heart">❤️</span></h1>
+    <div class="birthday-photo-frame">
+      <img id="birthday-photo" src="assets/images/birthday-photo.jpg" alt="A photo of Yashika on her birthday" onerror="handleImageError(this)">
+      <div class="img-placeholder-text">[ADD PHOTO HERE — assets/images/birthday-photo.jpg]</div>
+    </div>
+    <p class="birthday-caption" id="birthday-caption">Today is about you. ❤️</p>
+    <button class="btn btn-primary btn-continue" id="enter-site">Enter our little corner &rarr;</button>
+  </div>
+  <div class="floating-hearts" aria-hidden="true"></div>
+</section>
+
+<!-- ======================================================= -->
+<!-- WELCOME BACK (returning visitors) -->
+<!-- ======================================================= -->
+<section id="gate-welcome-back" class="gate-screen">
+  <div class="gate-inner">
+    <p class="gate-eyebrow">Hi again</p>
+    <h1 class="gate-question">Welcome back, Yashika <span class="heart">❤️</span></h1>
+    <div class="gate-buttons welcome-back-buttons">
+      <button class="btn btn-primary" id="go-to-site">Take me inside</button>
+      <button class="btn btn-ghost" id="replay-birthday">Replay the birthday surprise</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= -->
+<!-- LIGHTBOX (shared) -->
+<!-- ======================================================= -->
+<div id="lightbox" class="lightbox" aria-hidden="true">
+  <button class="lightbox-close" id="lightbox-close" aria-label="Close image">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+  <video id="lightbox-video" controls playsinline></video>
+</div>
+
+<!-- ======================================================= -->
+<!-- MAIN SITE -->
+<!-- ======================================================= -->
+<div id="main-site" class="main-site">
+
+  <!-- NAV -->
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-brand">Us <span class="heart small">❤️</span></a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-links" id="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#our-story">Us</a>
+        <a href="#memories">Memories</a>
+        <a href="#things-i-love">Things I Love</a>
+        <a href="#open-when">Open When</a>
+        <a href="#letter">Letter</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="section hero-section reveal">
+    <div class="hero-photo-frame">
+      <img src="assets/images/main-photo.jpg" alt="Us" onerror="handleImageError(this)">
+      <div class="img-placeholder-text">[ADD OUR MAIN PHOTO HERE]</div>
+    </div>
+    <h1 class="hero-title">Our Little Corner<br>of the World</h1>
+    <p class="hero-subtitle">Hi baby, this is a small gift for you — a little memory about us and all the time we have spent together. Hope you like it 😘</p>
+  </section>
+
+  <!-- DISTANCE -->
+  <section id="distance" class="section distance-section reveal">
+    <h2 class="section-heading">Distance Between Us</h2>
+    <div class="distance-track">
+      <span class="distance-city" id="city1-label">HYDERABAD</span>
+      <div class="distance-line">
+        <div class="distance-line-fill"></div>
+        <div class="distance-traveler">❤️</div>
+      </div>
+      <span class="distance-city" id="city2-label">KOLKATA</span>
+    </div>
+    <p class="distance-km" id="distance-km">~ &mdash; km</p>
+    <p class="distance-message">Different cities. Same us.</p>
+  </section>
+
+  <!-- OUR STORY / TIMELINE -->
+  <section id="our-story" class="section story-section reveal">
+    <h2 class="section-heading">Our Story</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <!-- THINGS I LOVE ABOUT YOU -->
+  <section id="things-i-love" class="section love-cards-section reveal">
+    <h2 class="section-heading">Things I Love About You</h2>
+    <div class="love-cards-grid" id="love-cards-grid"></div>
+  </section>
+
+  <!-- MEMORY GALLERY -->
+  <section id="memories" class="section memory-section reveal">
+    <h2 class="section-heading">Our Memories</h2>
+    <div class="memory-grid" id="memory-grid"></div>
+  </section>
+
+  <!-- OPEN WHEN -->
+  <section id="open-when" class="section openwhen-section reveal">
+    <h2 class="section-heading">Open When&hellip;</h2>
+    <div class="openwhen-grid" id="openwhen-grid"></div>
+  </section>
+
+  <!-- SMALL PLAYFUL BUTTON -->
+  <section class="section press-love-section reveal">
+    <button id="press-love-btn" class="press-love-btn">Press this if you love me ❤️</button>
+    <p id="press-love-msg" class="press-love-msg" aria-live="polite"></p>
+  </section>
+
+  <!-- LOVE LETTER -->
+  <section id="letter" class="section letter-section reveal">
+    <h2 class="section-heading">One Last Thing&hellip;</h2>
+    <div class="letter-paper">
+      <p class="letter-salutation">Dear Yashika,</p>
+      <p class="letter-body">[MY LETTER WILL GO HERE — write from the heart, this is just a placeholder paragraph so you can see how the letter will look on the page. Replace this entire block in script.js under siteConfig.loveLetter.]</p>
+      <p class="letter-signoff">With love,<br><span id="letter-name">Ansh</span></p>
+    </div>
+  </section>
+
+  <!-- FINAL PHOTO -->
+  <section class="section final-photo-section reveal">
+    <div class="final-photo-frame">
+      <img src="assets/images/final-photo.jpg" alt="Us" onerror="handleImageError(this)">
+      <div class="img-placeholder-text">[ADD FINAL PHOTO HERE]</div>
+    </div>
+    <p class="final-line" id="final-line">I'd choose you again. ❤️</p>
+  </section>
+
+  <!-- HIDDEN EASTER EGG -->
+  <button id="easter-egg" class="easter-egg" aria-label="A tiny hidden heart">✦</button>
+  <div id="easter-egg-message" class="easter-egg-message" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <p>Made with love, for you. ❤️</p>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
